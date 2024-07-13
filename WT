@@ -1,0 +1,497 @@
+get
+const http = require('http');
+const url = require('url');
+const qs = require('querystring');
+
+function onRequest(request, response) {
+    console.log(`Received ${request.method} request for ${request.url}`);
+    
+    if (request.method === 'GET') {
+        if (request.url.startsWith('/Login')) {
+            const query = url.parse(request.url).query;
+            const params = qs.parse(query);
+            const name = params['username'];
+            const email = params['email'];
+            
+            console.log(`Received data - Username: ${name}, Email: ${email}`);
+            
+            response.writeHead(200, { 'Content-Type': 'text/html' });
+            response.write(`Hello ${name}, your email id ${email} was received successfully.`);
+            response.end();
+        } else if (request.url === '/favicon.ico') {
+            response.writeHead(204, { 'Content-Type': 'image/x-icon' });
+            response.end();
+        } else {
+            response.writeHead(200, { 'Content-Type': 'text/html' });
+            response.end(`
+                <html>
+                <body>
+                    <form action="/Login" method="GET">
+                        Enter your user Name: <input type="text" name="username" value=""/> <br/>
+                        Enter your email: <input type="text" name="email" value=""/><br/>
+                        <input type="submit" name="login" value="Login">
+                    </form>
+                </body>
+                </html>
+            `);
+        }
+    } else {
+        response.writeHead(405, { 'Content-Type': 'text/html' });
+        response.write('Method not allowed');
+        response.end();
+    }
+}
+
+http.createServer(onRequest).listen(3333);
+console.log('Server has started on port 3333');
+
+post
+
+js
+const http = require("http");
+const url = require("url");
+const qs = require("querystring");
+
+function onRequest(request, response) {
+    console.log(`Received ${request.method} request for ${request.url}`);
+    
+    if (request.method === "POST" && request.url === "/Login") {
+        let body = '';
+
+        request.on('data', chunk => {
+            body += chunk.toString();
+        });
+
+        request.on('end', () => {
+            const post = qs.parse(body);
+            const name = post["username"];
+            const email = post["email"];
+            
+            console.log(`Received data - Username: ${name}, Email: ${email}`);
+            
+            response.writeHead(200, { "Content-Type": "text/html" });
+            response.write(`Hello ${name}, your email id ${email} was received successfully.`);
+            response.end();
+        });
+    } else {
+        response.writeHead(405, { "Content-Type": "text/html" });
+        response.write("Method not allowed");
+        response.end();
+    }
+}
+
+http.createServer(onRequest).listen(3333);
+
+console.log("Server has started on port 3333");
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Login Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        form {
+            max-width: 300px;
+            margin: auto;
+            padding: 1em;
+            border: 1px solid #ccc;
+            border-radius: 1em;
+        }
+        div {
+            margin-bottom: 1em;
+        }
+        label {
+            margin-bottom: .5em;
+            color: #333333;
+            display: block;
+        }
+        input[type="text"],
+        input[type="submit"] {
+            width: 100%;
+            padding: .7em;
+            border: 1px solid #CCC;
+            border-radius: 0.5em;
+        }
+        input[type="submit"] {
+            color: white;
+            background-color: #007BFF;
+            border-color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+
+<form action="http://127.0.0.1:3333/Login" method="POST">
+    <div>
+        <label for="username">Enter your user Name:</label>
+        <input type="text" id="username" name="username" value=""/>
+    </div>
+    <div>
+        <label for="email">Enter your email:</label>
+        <input type="text" id="email" name="email" value=""/>
+    </div>
+    <div>
+        <input type="submit" name="login" value="Login">
+    </div>
+</form>
+
+</body>
+</html>
+
+form validation js
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2,
+        h3 {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+            
+        }
+
+        .form-row input {
+            margin-right: 5px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #5e0000;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        button {
+            background-color: #42c605;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #1f7900;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Registration Form</h2>
+    <form id="myForm" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="rollno">Roll Number:</label>
+            <input type="text" id="rollno" name="rollno" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="number">Phone Number:</label>
+            <input type="tel" id="number" name="number" required>
+        </div>
+
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" min="1" max="100" required>
+        </div>
+
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <div class="form-row">
+                <input type="radio" id="male" name="gender" value="male" required>
+                <label for="male">Male</label>
+                <input type="radio" id="female" name="gender" value="female">
+                <label for="female">Female</label>
+                <input type="radio" id="other" name="gender" value="other">
+                <label for="other">Other</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="year">Year of Study:</label>
+            <select id="year" name="year" required>
+                <option value="0">Select Year</option>
+                <option value="1">First Year</option>
+                <option value="2">Second Year</option>
+                <option value="3">Third Year</option>
+                <option value="4">Fourth Year</option>
+            </select>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <h3>Form Values:</h3>
+    <div id="output">
+        <table>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        function validateForm() {
+            var name = document.getElementById("name").value;
+            var rollno = document.getElementById("rollno").value;
+            var email = document.getElementById("email").value;
+            var number = document.getElementById("number").value;
+            var age = document.getElementById("age").value;
+            var gender = document.querySelector('input[name="gender"]:checked');
+            var year = document.getElementById("year").value;
+
+            if (name === "" || rollno === "" || email === "" || number === "" || age === "" || !gender || year == 0) {
+                alert("Please fill out all fields");
+                return false;
+            }
+
+            if (!validateEmail(email)) {
+                alert("Invalid email address");
+                return false;
+            }
+
+            if (number.length !== 10 || isNaN(number)) {
+                alert("Phone Number must be a 10-digit number");
+                return false;
+            }
+
+            var output = document.querySelector("#output table tbody");
+            var table =
+                `<tr><th>Field</th><th>Value</th></tr>
+            <tr><td>Name</td><td>${name}</td></tr>
+            <tr><td>Roll Number</td><td>${rollno}</td></tr>
+            <tr><td>Email</td><td>${email}</td></tr>
+            <tr><td>Phone Number</td><td>${number}</td></tr>
+            <tr><td>Age</td><td>${age}</td></tr>
+            <tr><td>Gender</td><td>${gender.value}</td></tr>
+            <tr><td>Year of Study</td><td>${year}</td></tr>`;
+
+            output.innerHTML = table;
+
+            document.getElementById("myForm").reset();
+
+            return false;
+        }
+
+        function validateEmail(email) {
+            var at = email.indexOf("@");
+            var dot = email.lastIndexOf(".");
+            return at > 0 && dot > at + 1 && dot < email.length - 1;
+        }
+    </script>
+
+</body>
+
+</html>
+
+bill calculator
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Bill Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    
+    h1 {
+      color: #333;
+    }
+
+    #bill-form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    #bill-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    #bill-table th,
+    #bill-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    #bill-table th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    p {
+      font-size: 1.2em;
+      color: #333;
+    }
+
+   
+  </style>
+</head>
+<body>
+  <h1>Bill Calculator</h1>
+  <div id="bill-form">
+    <label for="item-name">Item Name:</label>
+    <input type="text" id="item-name" name="item-name">
+    <label for="item-quantity">Quantity:</label>
+    <input type="number" id="item-quantity" name="item-quantity">
+    <label for="item-price">Price per Unit:</label>
+    <input type="number" id="item-price" name="item-price">
+    <button type="button" onclick="addItem()" required>Add Item</button>
+  </div>
+
+  <h2>Bill Summary:</h2>
+  <table id="bill-table">
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>Quantity</th>
+        <th>Price per Unit(₹)</th>
+        <th>Total Amount</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <br>
+  <p>Total Bill Amount: ₹<span id="total-bill-amount">0.00</span></p>
+
+  <script>
+    var totalBillAmount = 0;
+
+    function addItem() {
+        var itemName = document.getElementById("item-name").value;
+        var itemQuantity = parseFloat(document.getElementById("item-quantity").value);
+        var itemPrice = parseFloat(document.getElementById("item-price").value);
+        var itemTotalAmount = itemQuantity * itemPrice;
+        totalBillAmount += itemTotalAmount;
+
+        var row =document.getElementsByTagName("tbody")[0];
+        row.innerHTML += `<tr>
+            <td>${itemName}</td>
+            <td>${itemQuantity}</td>
+            <td>₹${itemPrice.toFixed(2)}</td>
+            <td>₹${itemTotalAmount.toFixed(2)}</td></tr>
+        `;
+        document.getElementById("total-bill-amount").textContent = totalBillAmount.toFixed(2);
+        document.getElementById("item-name").value = "";
+        document.getElementById("item-quantity").value = "";
+        document.getElementById("item-price").value = "";
+    }
+
+</script>
+
+</body>
+</html>
+
